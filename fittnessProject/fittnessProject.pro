@@ -12,9 +12,9 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    distance.cpp
+    distance_aj.cpp
 
 HEADERS  += mainwindow.h \
-    distance.h
+    distance_aj.h
 
 FORMS    += mainwindow.ui
