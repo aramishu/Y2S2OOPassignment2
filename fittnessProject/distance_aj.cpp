@@ -1,15 +1,16 @@
 #include "distance_aj.h"
-
-#include <iostream>
+#define KM_CON_FAC 1000.0f
+#define M_CON_FAC 1609.344f
+//#include <iostream>
 
 distance_aj::distance_aj()
 {
-    this->distance = 5000;
+    this->value = 0;
 }
 
 distance_aj::distance_aj(double initialValue)
 {
-    this->distance = initialValue;
+    this->value = initialValue;
 }
 
 distance_aj::distance_aj(double initialValue, char *unit)
@@ -26,7 +27,8 @@ distance_aj::distance_aj(double initialValue, char *unit)
 
 double distance_aj::getDistance() const
 {
-    return this->distance;
+    //return this->value;
+    return this->getValue();
 }
 
 double distance_aj::getDistance(char *unit) const
@@ -40,12 +42,13 @@ double distance_aj::getDistance(char *unit) const
         return this->getDistanceAsMiles();
     }
     else
-    {   return this->distance;  }
+    {   return this->value;  }
 }
 
-void distance_aj::setDistance(double value)
+void distance_aj::setDistance(double newValue)
 {
-    this->distance = value;
+    //this->value = value;
+    this->setValue(newValue);
 }
 
 void distance_aj::setDistance(double value, char *unit)
@@ -62,22 +65,22 @@ void distance_aj::setDistance(double value, char *unit)
 
 double distance_aj::getDistanceAsKm() const
 {
-    return this->distance/1000;
+    return this->value/KM_CON_FAC;
 }
 
 double distance_aj::getDistanceAsMiles() const
 {
-    return this->distance*0.000621371192f;
+    return this->value/M_CON_FAC;
 }
 
 void distance_aj::setDistanceAskm(double newValue)
 {
-    this->distance = newValue*1000;
+    this->value = newValue*KM_CON_FAC;
 }
 
 void distance_aj::setDistanceAsMiles(double newValue)
 {
-    this->distance = newValue/0.000621371192f;
+    this->value = newValue*M_CON_FAC;
 }
 
 distance_aj distance_aj::operator +(const distance_aj& v) const
@@ -106,12 +109,12 @@ distance_aj distance_aj::operator /(const distance_aj& v) const
 
 bool distance_aj::operator== (const distance_aj& v) const
 {
-    return (this->distance == v.getDistance());
+    return (this->value == v.getDistance());
 }
 
 bool distance_aj::operator!= (const distance_aj& v) const
 {
-    return (this->distance != v.getDistance());
+    return (this->value != v.getDistance());
 }
 
 distance_aj& distance_aj::operator+=(const distance_aj &v)

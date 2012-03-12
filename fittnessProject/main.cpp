@@ -7,7 +7,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    distance_aj dist1, dist2(20.0f);
+    distance_aj dist1(100.0f), dist2(20.0f);
     distance_aj dist3 = dist1 / dist2;
     //char unit = 'm';
     //cout << dist.getDistance(&unit);
