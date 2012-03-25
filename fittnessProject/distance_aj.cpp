@@ -109,12 +109,12 @@ distance_aj distance_aj::operator /(const distance_aj& v) const
 
 bool distance_aj::operator== (const distance_aj& v) const
 {
-    return (this->value == v.getDistance());
+	return (this->getValue() == v.getValue());
 }
 
 bool distance_aj::operator!= (const distance_aj& v) const
 {
-    return (this->value != v.getDistance());
+	return (this->getValue() != v.getValue());
 }
 
 distance_aj& distance_aj::operator+=(const distance_aj &v)

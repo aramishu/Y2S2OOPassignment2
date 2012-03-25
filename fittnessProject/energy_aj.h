@@ -11,6 +11,17 @@ public:
 	energy_aj(double initialValue, char *unit);
 	double getEnergy() const;
 	double getEnergy(char *unit) const;
+	void setEnergy(double newValue);
+	void setEnergy(double newValue, char *unit);
+	bool operator == (const energy_aj& ) const;
+	bool operator != (const energy_aj& ) const;
+	energy_aj& operator+=(const energy_aj &v);
+	energy_aj& operator-=(const energy_aj &v);
+
+	energy_aj operator+(const energy_aj& v) const;
+	energy_aj operator-(const energy_aj& v) const;
+	energy_aj operator*(const energy_aj& v) const;
+	energy_aj operator/(const energy_aj& v) const;
 
 private:
 	double getEnergyAskj(void) const;

@@ -3,17 +3,31 @@
 
 fileReader::fileReader()
 {
-	QFile* file = new QFile("testFile.xml");
-	qDebug() << "attempting to open file";
-	if (!file->open(QIODevice::ReadOnly | QIODevice::Text))
-	{
-		qDebug() << "failed to open file";
-	}
-	else
-	{
-		qDebug() << "file open";
+	this->file = new QFile("testFile.xml");
 
-		QXmlStreamReader xml(file);
+	this->ptrDays = new QList<day_aj*>();
+}
+
+fileReader::fileReader(QList<day_aj*>* ptrDays)
+{
+	this->dayIndex = 0;
+	this->file = new QFile("testFile.xml");
+	this->ptrDays = ptrDays;
+}
+
+fileReader::fileReader(QString fileName, QList<day_aj*>* ptrDays)
+{
+	this->dayIndex = 0;
+	this->file = new QFile(fileName);
+	this->ptrDays = ptrDays;
+
+}
+
+void fileReader::parseFile()
+{
+	if(this->file->isOpen())
+	{
+		QXmlStreamReader xml(this->file);
 
 		while(!xml.atEnd())
 		{
@@ -36,6 +50,22 @@ fileReader::fileReader()
 
 		if (xml.hasError())
 		{		qDebug() << "Error with xml file::" << xml.errorString();		}
+	}
+	else
+		qDebug() << "cannot parse file, file not open";
+}
+
+bool fileReader::openFile()
+{
+	if (!file->open(QIODevice::ReadOnly | QIODevice::Text))
+	{
+		qDebug() << "failed to open file";
+		return false;
+	}
+	else
+	{
+		qDebug() << "file open";
+		return true;
 	}
 }
 
@@ -100,19 +130,21 @@ void fileReader::parseDays(QXmlStreamReader &xml)
 		if(xml.tokenType() == QXmlStreamReader::StartElement && xml.name() == "day")
 		{
 			this->parseDay(xml);
+			qDebug() << "index: " << this->dayIndex++;
 		}
 	}
 }
 
 void fileReader::parseDay(QXmlStreamReader &xml)
 {
-	QString date;
+	this->ptrDays->append(new day_aj());
+
 	while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "day"))
 	{
 		xml.readNext();
 		if(xml.tokenType() == QXmlStreamReader::StartElement && xml.name() == "date")
 		{
-			date = this->getNextVal(xml);
+			this->ptrDays->value(this->dayIndex)->setDate(this->getNextVal(xml));
 		}
 		else if(xml.tokenType() == QXmlStreamReader::StartElement && xml.name() == "weight")
 		{
@@ -127,7 +159,6 @@ void fileReader::parseDay(QXmlStreamReader &xml)
 			this->parseExer(xml);
 		}
 	}
-	qDebug() << "date" << date;
 }
 
 void fileReader::parseWeight(QXmlStreamReader &xml)
@@ -145,8 +176,9 @@ void fileReader::parseWeight(QXmlStreamReader &xml)
 			wmass = this->getNextVal(xml);
 		}
 	}
-	qDebug() << "wtime" << wtime;
-	qDebug() << "wmass" << wmass;
+	this->ptrDays->value(this->dayIndex)->addWeight(new weight_aj(wmass, wtime));
+	//qDebug() << "wtime" << wtime;
+	//qDebug() << "wmass" << wmass;
 }
 
 void fileReader::parseNomz(QXmlStreamReader &xml)
@@ -168,9 +200,10 @@ void fileReader::parseNomz(QXmlStreamReader &xml)
 			ener = this->getNextVal(xml);
 		}
 	}
-	qDebug() << "desc" << desc;
-	qDebug() << "ntime" << ntime;
-	qDebug() << "ener" << ener;
+	this->ptrDays->value(this->dayIndex)->addNom(new nom_aj(desc, ntime, ener));
+	//qDebug() << "desc" << desc;
+	//qDebug() << "ntime" << ntime;
+	//qDebug() << "ener" << ener;
 }
 
 void fileReader::parseExer(QXmlStreamReader &xml)
@@ -200,12 +233,14 @@ void fileReader::parseExer(QXmlStreamReader &xml)
 			note = this->getNextVal(xml);
 		}
 	}
-	qDebug() << "completed" << completed;
-	qDebug() << "type" << type;
-	qDebug() << "dist" << dist;
-	qDebug() << "ener" << ener;
-	qDebug() << "note" << note;
+	this->ptrDays->value(this->dayIndex)->addExercise(new exercise_aj(completed, type, dist, ener, note));
+	//qDebug() << "completed" << completed;
+	//qDebug() << "type" << type;
+	//qDebug() << "dist" << dist;
+	//qDebug() << "ener" << ener;
+	//qDebug() << "note" << note;
 }
+
 QString fileReader::getNextVal(QXmlStreamReader &xml)
 {
 	xml.readNext();

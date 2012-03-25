@@ -1,5 +1,5 @@
 #include "energy_aj.h"
-#define CAL_CONVER_FAC 4.18400f //calorie conversion factor
+#define CAL_CONVER_FAC 4184.0f //(kilo)calorie conversion factor
 #define KJ_CONVER_FAC 1000.0f //kilojule conversion factor
 
 energy_aj::energy_aj()
@@ -19,7 +19,22 @@ energy_aj::energy_aj(double initialValue, char *unit)
 	else if(*unit == 'c')
 	{    this->setEnergyAsCal(initialValue);    }
 	else
-	{    this->value = initialValue;    }
+	{    this->setValue(initialValue);    }
+}
+
+void energy_aj::setEnergy(double newValue)
+{
+	this->setValue(newValue);
+}
+
+void energy_aj::setEnergy(double newValue, char *unit)
+{
+	if(*unit == 'k')
+	{    this->setEnergyAskj(newValue); }
+	else if(*unit == 'c')
+	{    this->setEnergyAsCal(newValue);    }
+	else
+	{    this->setValue(newValue);    }
 }
 
 double energy_aj::getEnergy() const
@@ -44,7 +59,7 @@ double energy_aj::getEnergyAskj() const
 
 void energy_aj::setEnergyAskj(double newValue)
 {
-	this->value = newValue*KJ_CONVER_FAC;
+	this->setValue(newValue*KJ_CONVER_FAC);
 }
 
 
@@ -55,5 +70,53 @@ double energy_aj::getEnergyAsCal() const
 
 void energy_aj::setEnergyAsCal(double newValue)
 {
-	this->value = newValue*CAL_CONVER_FAC;
+	this->setValue(newValue*CAL_CONVER_FAC);
+}
+
+bool energy_aj::operator== (const energy_aj& v) const
+{
+	return (this->getValue() == v.getValue());
+}
+
+bool energy_aj::operator!= (const energy_aj& v) const
+{
+	return (this->getValue() != v.getValue());
+}
+
+energy_aj& energy_aj::operator+=(const energy_aj &v)
+{
+	this->setValue(this->getValue() + v.getValue());
+
+	return *this;
+}
+
+energy_aj& energy_aj::operator-=(const energy_aj &v)
+{
+	this->setValue(this->getValue() - v.getValue());
+
+	return *this;
+}
+
+energy_aj energy_aj::operator +(const energy_aj& v) const
+{
+		energy_aj d(this->getValue() + v.getValue());
+		return d;
+}
+
+energy_aj energy_aj::operator -(const energy_aj& v) const
+{
+		energy_aj d(this->getValue() - v.getValue());
+		return d;
+}
+
+energy_aj energy_aj::operator *(const energy_aj& v) const
+{
+		energy_aj d(this->getValue() * v.getValue());
+		return d;
+}
+
+energy_aj energy_aj::operator /(const energy_aj& v) const
+{
+		energy_aj d(this->getValue() / v.getValue());
+		return d;
 }
